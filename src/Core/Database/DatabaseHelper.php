@@ -32,9 +32,9 @@ class DatabaseHelper
                 $instanceName = '\PS\Source\Classes\\' . self::getClassName();
                 $selfInstance = new $instanceName();
                 foreach ($selfInstance as $key => &$value) {
-                    if (ctype_digit($row[$key])) {
-                        $row[$key] = (int)$row[$key];
-                    }
+                    // if (ctype_digit($row[$key])) {
+                    //     $row[$key] = (int)$row[$key];
+                    // }
                     $value = $row[$key];
                 }
                 $output[] = $selfInstance;

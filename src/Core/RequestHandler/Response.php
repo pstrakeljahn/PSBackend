@@ -40,11 +40,11 @@ class Response
         header("Access-Control-Allow-Origin: *");
         header('Access-Control-Allow-Method: POST, GET, OPTIONS');
         header('Access-Control-Allow-Credentials: true');
-        header('Access-Control-Allow-Headers: Authorization, Content-Type, x-xsrf-token, x_csrftoken, Cache-Control, X-Requested-With, pragma');
+        header('Access-Control-Allow-Headers: Authorization, Content-Type, x-xsrf-token, x_csrftoken, Cache-Control, X-Requested-With, pragma, Expires');
 
 
         if ($methode === 'options') {
-                echo json_encode(array('data' => 'no support, only preflight'));
+            echo json_encode(array('data' => 'no support, only preflight'));
             exit(0);
         }
         http_response_code($statusCode ?? (isset($error['code']) ? $error['code'] : self::STATUS_CODE_OK));
