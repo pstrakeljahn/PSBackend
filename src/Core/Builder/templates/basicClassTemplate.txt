@@ -1,0 +1,30 @@
+<?php
+
+namespace PS\Source\BasicClasses;
+
+use Exception;
+use PS\Source\Classes\###className###;
+use PS\Source\Core\Database\DatabaseHelper;
+
+class ###className###Basic extends DatabaseHelper
+{
+###definitionOfAttr###
+    const REQUIRED_VALUES = [###requiredValues###];
+
+    public function __construct()
+    {
+        $entityPath = __DIR__.'/../../entities/' . self::getClassName() . '.php';
+        if (!file_exists($entityPath)) {
+            throw new Exception('Cannot instantiate class! Entity file missing.');
+        }
+        $entity = include($entityPath);
+        // ID IS HARDCODED!
+        $this->{'ID'} = null;
+        foreach ($entity as $column) {
+            $this->{$column['name']} = null;
+        }
+    }
+    
+	public static function getInstance() {
+		return new ###className###();
+	}
