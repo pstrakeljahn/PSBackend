@@ -1,5 +1,6 @@
 <?php
 
+use PS\Source\Api\ApiHandler;
 use PS\Source\Core\RequestHandler\Response;
 use PS\Source\Core\RequestHandler\Router;
 use PS\Source\Core\Session\SessionHandler;
@@ -29,8 +30,7 @@ if (count($match)) {
 } elseif (count($cronjob)) {
     return include('./cronjob.php');
 } elseif (count($mod)) {
-    include('./mod.php');
-    Mod::run($mod, $_SERVER['REQUEST_METHOD']);
+    ApiHandler::run($mod, $_SERVER['REQUEST_METHOD']);
     return;
 } elseif (count($build)) {
     return include('./build.php');

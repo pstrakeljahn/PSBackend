@@ -1,12 +1,30 @@
 <?php
 
-use PS\Source\BasicClasses\ReservationBasic;
+namespace PS\Source\Api\Endpoints;
+
 use PS\Source\Classes\Reservation;
 
-require_once __DIR__ . '/autoload.php';
-
-class Mod
+class CreateReservation
 {
+
+    const ALLOWED_METHODS = ['POST'];
+
+    public static function post()
+    {
+        if (file_get_contents('php://input') !== "") {
+            $data = array();
+            parse_str(file_get_contents('php://input'), $data);
+            self::setHeaders();
+            if (array_diff(self::NEEDED_KEYS, array_keys($data))) {
+                echo json_encode(self::badRequest());
+                die();
+            }
+            return self::prepareReservation($data);
+        }
+        echo json_encode(self::badRequest(true));
+        die();
+    }
+
     const NEEDED_KEYS = array(
         "timestamp",
         "name",
@@ -15,25 +33,6 @@ class Mod
         "personCount",
     );
 
-    public static function run($match, $method)
-    {
-        $arrUrl = explode('/', $match[count($match) - 1]);
-        if ($arrUrl[0] === 'reserve' && $method === 'POST') {
-            if (file_get_contents('php://input') !== "") {
-                $data = array();
-                parse_str(file_get_contents('php://input'), $data);
-                self::setHeaders();
-                if (array_diff(self::NEEDED_KEYS, array_keys($data))) {
-                    echo json_encode(self::badRequest());
-                    die();
-                }
-                $objReservation = self::prepareReservation($data);
-                echo json_encode(self::goodRequest($objReservation));
-            }
-        }
-        die();
-    }
-
     private static function prepareReservation($data)
     {
         $objReservation = Reservation::getInstance()
@@ -41,7 +40,7 @@ class Mod
             ->setMail($data['mail'])
             ->setPhone($data['phone'])
             ->setPersonCount($data['personCount'])
-            ->setStatus(ReservationBasic::ENUM_STATUS_NEW)
+            ->setStatus(Reservation::ENUM_STATUS_NEW)
             ->setDatetime(date('Y-m-d H:i:s', $data['timestamp']))->save();
 
         return $objReservation;
@@ -57,13 +56,13 @@ class Mod
         ];
     }
 
-    private static function badRequest()
+    private static function badRequest($noInput = false)
     {
         http_response_code(400);
         return [
             'status' => 400,
             'data' => null,
-            'error' => 'Parameters are not valid'
+            'error' => $noInput ? 'No Parameters sent' : 'Parameters are not valid'
         ];
     }
 

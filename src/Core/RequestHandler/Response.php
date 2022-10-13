@@ -82,6 +82,7 @@ class Response
         }
 
         echo json_encode($response);
+        die();
     }
 
     public static function checkApiReadable($obj)
