@@ -2,24 +2,30 @@
 
 namespace PS\Source\Api\Endpoints;
 
-class ChangeStatus
+use PS\Source\Api\ApiExtender;
+use PS\Source\Classes\Reservation;
+
+class ChangeStatus extends ApiExtender
 {
 
-    const ALLOWED_METHODS = ['POST'];
-
-    public static function post()
+    public function define()
     {
+        $this->setAcceptableParamaters([
+            "ID",
+            "status"
+        ]);
+        $this->setAllowedMethodes(['POST']);
     }
 
-
-
-    private static function setHeaders(): void
+    public function post()
     {
-        header('Content-Type: application/json, charset=utf-8');
-        header("Cache-Control: no-transform,public,max-age=300,s-maxage=900");
-        header("Access-Control-Allow-Origin: *");
-        header('Access-Control-Allow-Method: POST, GET, OPTIONS');
-        header('Access-Control-Allow-Credentials: true');
-        header('Access-Control-Allow-Headers: Authorization, Content-Type, x-xsrf-token, x_csrftoken, Cache-Control, X-Requested-With, pragma');
+        if (!in_array(($this->requestParameter['status']), [Reservation::ENUM_STATUS_ACCEPTED, Reservation::ENUM_STATUS_DECLINED])) {
+            $this->setResponse([], 'Status not allowed');
+            return;
+        }
+        $objReservation = Reservation::getInstance()
+            ->add(Reservation::ID, $this->requestParameter['ID'])->select();
+        $objReservation[0]->setStatus($this->requestParameter['status'])->save();
+        $this->setResponse($objReservation);
     }
 }

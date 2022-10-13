@@ -42,7 +42,6 @@ class Response
         header('Access-Control-Allow-Credentials: true');
         header('Access-Control-Allow-Headers: Authorization, Content-Type, x-xsrf-token, x_csrftoken, Cache-Control, X-Requested-With, pragma, Expires');
 
-
         if ($methode === 'options') {
             echo json_encode(array('data' => 'no support, only preflight'));
             exit(0);
@@ -64,15 +63,16 @@ class Response
                 $response['status'] = self::STATUS_SERVER_ERROR;
                 $response['error'] = 'User does not exist';
             } else {
+
                 Logging::getInstance()->add(
                     Logging::LOG_TYPE_API,
                     'User ID: '
                         . $user->getID() . ', Object: "'
-                        . (is_null($obj) ? null : (get_class(gettype($obj) !== "array" ? $obj : $obj[0] ?? "-")))
+                        . ((is_null($obj) || gettype($obj) === "array") ? null : (get_class(gettype($obj) !== "array" ? $obj : $obj[0] ?? "-")))
                         . '" method: "'
                         . strtoupper($methode)
                         . '", ID: '
-                        . (is_null($obj) ? null : ((gettype($obj) === "array") ? (count($obj) ? 'all' : "-") : $obj->getID() ?? 'null'))
+                        . ((is_null($obj) || gettype($obj) === "array") ? null : ((gettype($obj) === "array") ? (count($obj) ? 'all' : "-") : $obj->getID() ?? 'null'))
                         . ', Code: ' . $response['status']
                 );
             }
