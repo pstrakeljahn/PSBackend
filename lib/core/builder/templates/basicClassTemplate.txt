@@ -1,0 +1,31 @@
+<?php
+
+namespace PS\Build;
+
+use Config;
+use Exception;
+use PS\Source\Classes\###className###;
+use PS\Core\Database\DatabaseHelper;
+
+class ###className###Basic extends DatabaseHelper
+{
+###definitionOfAttr###
+    const REQUIRED_VALUES = [###requiredValues###];
+
+    public function __construct()
+    {
+		$entityPath = Config::BASE_PATH . 'entities/' . self::getClassName() . '.json';
+		if (!file_exists($entityPath)) {
+			throw new Exception('Cannot instantiate class! Entity file missing.');
+		}
+		$entity = json_decode(file_get_contents($entityPath), true)['defintion'];
+        // ID IS HARDCODED!
+        $this->{'ID'} = null;
+        foreach ($entity as $column) {
+            $this->{$column['name']} = null;
+        }
+    }
+    
+	public static function getInstance() {
+		return new ###className###();
+	}

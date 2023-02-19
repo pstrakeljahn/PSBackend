@@ -1,13 +1,22 @@
 <?php
 
-use PS\Source\Api\ApiHandler;
-use PS\Source\Core\RequestHandler\Response;
-use PS\Source\Core\RequestHandler\Router;
-use PS\Source\Core\Session\SessionHandler;
+use PS\Core\Api\ApiHandler;
+use PS\Core\RequestHandler\Response;
+use PS\Core\RequestHandler\Router;
+use PS\Core\Session\SessionHandler;
 
 require_once __DIR__ . '/autoload.php';
 
 $uri = $_SERVER['REQUEST_URI'];
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
+    header('Access-Control-Max-Age: 86400');
+    header('Content-Length: 0');
+    header('Content-Type: text/plain');
+}
 
 preg_match('/^.*(api\/v1\/obj\/)(.*)$/', $uri, $match);
 preg_match('/^.*(api\/v1\/mod\/)(.*)$/', $uri, $mod);
@@ -25,7 +34,7 @@ if (count($match)) {
         $router = new Router();
         $router->run($match);
     } else {
-        Response::generateResponse(array(), ['code' => Response::STATUS_CODE_FORBIDDEN, 'message' => 'Please lock in!']);
+        Response::generateResponse(null, ['code' => Response::STATUS_CODE_FORBIDDEN, 'message' => 'Please lock in!']);
     }
 } elseif (count($cronjob)) {
     return include('./cronjob.php');
@@ -35,6 +44,8 @@ if (count($match)) {
 } elseif (count($build)) {
     return include('./build.php');
 } else {
+    return;
+    // @todo Has to be reworked
     $arrFullUri = explode("/", $uri);
     $arrUri = array_splice($arrFullUri, 2);
     $requestedRoute = implode("/", $arrUri);
