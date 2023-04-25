@@ -4,15 +4,20 @@ namespace PS\Core\Session;
 
 use Config;
 use PS\Core\RequestHandler\Request;
+use PS\Source\Classes\User;
 
 class TokenHelper extends Request
 {
-    public static function createToken($user): string
+    public static function createToken(User $user): string
     {
         $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
         $payload = json_encode(
             [
                 'userID' => $user->getID(),
+                'username' => $user->getUsername(),
+                'firstname' => $user->getFirstname(),
+                'lastname' => $user->getSurname(),
+                'mail' => $user->getMail(),
                 'exp' => is_null(Config::EXPIRATION) ? null : (time() + Config::EXPIRATION)
             ]
         );

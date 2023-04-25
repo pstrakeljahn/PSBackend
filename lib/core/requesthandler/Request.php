@@ -8,7 +8,7 @@ class Request extends Response
     public function get($obj, $get, $post, $input, $error = null, $id = null)
     {
         $loginRequest = false;
-        if (gettype($obj) === "array" && $obj[0] === "login") {
+        if (gettype($obj) === "array" && isset($obj[0]) && $obj[0] === "login") {
             $loginRequest = true;
         }
         $this->generateResponse($obj, $error, __FUNCTION__, null, $loginRequest);

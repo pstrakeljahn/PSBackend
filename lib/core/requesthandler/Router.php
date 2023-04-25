@@ -2,6 +2,7 @@
 
 namespace PS\Core\RequestHandler;
 
+use PS\Core\Database\Criteria;
 use PS\Core\Session\TokenHelper;
 use PS\Source\Classes\User;
 
@@ -44,7 +45,13 @@ class Router extends Request
 
             // check obj endpoint
             $arrUrl = explode('/', $match[count($match) - 1]);
-            $className = '\PS\Source\Classes\\' . ucfirst($arrUrl[0]);
+            // Explode request to strip params
+            if (empty($arrUrl[0])) {
+                $error = ['code' => Response::STATUS_CODE_NOTFOUND, 'message' => 'No Object selected!'];
+                call_user_func_array([$this, $this->method], [[], $_GET, $_POST, $this->input, $error]);
+                return;
+            }
+            $className = '\PS\Source\Classes\\' . ucfirst(explode("?", $arrUrl[0])[0]);
             $error = ['code' => null, 'message' => null];
             if (!class_exists($className)) {
                 $error = ['code' => Response::STATUS_CODE_NOTFOUND, 'message' => 'Object' . $className . ' does not exist!'];
@@ -53,7 +60,7 @@ class Router extends Request
             } else if (empty($arrUrl[1]) && $this->method === 'GET') {
                 // GET all without ID
                 $instance = new $className();
-                $res = $instance->select();
+                $res = self::searchObject($instance, $_GET);
                 call_user_func_array([$this, $this->method], [$res, $_GET, $_POST, $this->input, $error]);
                 return;
             } else if (empty($arrUrl[1]) && $this->method === 'POST') {
@@ -118,5 +125,19 @@ class Router extends Request
             $obj = ['login', array()];
         }
         call_user_func_array([$this, $this->method], [$obj, $_GET, $_POST, $this->input, $error]);
+    }
+
+    private static function searchObject($instance, $params)
+    {
+        foreach ($params as $key => $value) {
+            if (method_exists($instance, 'get' . ucfirst($key))) {
+                if ($value === "null" || $value === "NULL") {
+                    $instance->add($key, $value, Criteria::ISNULL);
+                } else {
+                    $instance->add($key, $value);
+                }
+            }
+        }
+        return $instance->select();
     }
 }

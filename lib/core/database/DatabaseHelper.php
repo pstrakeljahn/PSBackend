@@ -67,7 +67,7 @@ class DatabaseHelper extends Criteria
                 $tmpQuery = 'WHERE ' . $column . ' IN (' . implode(',', $value) . ')';
                 break;
         }
-        if (!is_array($value)) {
+        if (!is_array($value) && is_null($criteria)) {
             $this->searchParams[':' . $value] = $value;
         }
 
