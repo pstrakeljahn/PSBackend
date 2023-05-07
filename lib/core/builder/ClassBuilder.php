@@ -101,7 +101,7 @@ class ClassBuilder extends DBConnector
         // HIER KANN NOCH NE KONDITION REIN. ERSTMAL IMMER MIT ID
         if (true) {
             $query = $query . "`ID` int(11) unsigned NOT NULL auto_increment,";
-            $this->logInstance->add(Logging::LOG_TYPE_BUILD, 'Column ID added', false, true);
+            // $this->logInstance->add(Logging::LOG_TYPE_BUILD, 'Column ID added', false, true);
         }
         foreach ($entity['defintion'] as $entity) {
             if ($entity['type'] === 'enum') {
@@ -122,7 +122,7 @@ class ClassBuilder extends DBConnector
             } else {
                 $query = $query . "`" . $entity['name'] . "` " . $entity['type'] . "(" . $entity['length'] . ") ";
             }
-            $this->logInstance->add(Logging::LOG_TYPE_BUILD, 'Column ' . $entity['name'] . ' added', false, true);
+            // $this->logInstance->add(Logging::LOG_TYPE_BUILD, 'Column ' . $entity['name'] . ' added', false, true);
             if (isset($entity['notnull']) && $entity['notnull']) {
                 $query = $query . "NOT NULL";
             }
