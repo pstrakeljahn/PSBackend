@@ -33,7 +33,7 @@ class BuildInstance
     private function run(): void
     {
         $this->printHeader();
-        die();
+
         //Fetch Entites
         $entities = glob(Config::BASE_PATH . 'entities/*.json');
         $classBuilder = new ClassBuilder;
