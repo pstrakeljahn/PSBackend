@@ -88,8 +88,11 @@ class ClassBuilder extends DBConnector
     {
         foreach ($this->keyConstraints as $query) {
             $db = new DBConnector();
-            $db->query($query);
-            $db->execute();
+            try {
+                $db->query($query);
+                $db->execute();
+            } catch (\Exception $e) {
+            }
         }
     }
 
