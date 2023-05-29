@@ -10,6 +10,7 @@ class ClassBuilder extends DBConnector
     const KEYWORDS = ['CASCADE', 'SET NULL', 'NO ACTION', 'RESTRICT'];
     public $logInstance;
     public array $keyConstraints;
+    public array $packageInfo;
 
     public function __construct()
     {
@@ -17,8 +18,9 @@ class ClassBuilder extends DBConnector
         $this->keyConstraints = [];
     }
 
-    public function buildClass(array $entity, $validate, $onlyAdding, $force)
+    public function buildClass(array $entity, string $filePathInfo, $validate, $onlyAdding, $force)
     {
+        $this->packageInfo = include($filePathInfo);
         if ($validate) {
             if ($this->validateEntity($entity)) {
                 $this->logInstance->add(Logging::LOG_TYPE_BUILD, 'Validation successful', false, true);
@@ -34,7 +36,8 @@ class ClassBuilder extends DBConnector
         ) ? ' successfully ' : ' unsuccessfully ') . 'created', false, true);
         // @todo ALTERLOGIK FEHLT HIER NOCH!
         $this->logInstance->add(Logging::LOG_TYPE_BUILD, 'BasicClass ' . ucfirst($entity['name']) . ($this->generateBasicClass(
-            $entity
+            $entity,
+            $this->packageInfo
         ) ? ' successfully ' : ' unsuccessfully ') . 'created', false, true);
     }
 
@@ -155,10 +158,10 @@ class ClassBuilder extends DBConnector
         return $db->execute();
     }
 
-    private function generateBasicClass(array $entity): bool
+    private function generateBasicClass(array $entity, array $packageInfo): bool
     {
         try {
-            $initClass = new BuildClassFile($entity);
+            $initClass = new BuildClassFile($entity, $packageInfo);
             return $initClass->execute();
         } catch (\Exception $e) {
             Logging::getInstance()->add(Logging::LOG_TYPE_ERROR, $e->getMessage());

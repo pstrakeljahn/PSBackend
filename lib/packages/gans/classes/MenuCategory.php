@@ -1,6 +1,6 @@
 <?php
 
-namespace PS\Source\Classes;
+namespace PS\Packages\Gans\Classes;
 
 use PS\Build\MenuCategoryBasic;
 

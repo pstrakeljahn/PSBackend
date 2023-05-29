@@ -108,7 +108,7 @@ class Response
     {
         // ID IS HARDCODED!
         $arrPath = explode("\\", get_class($obj));
-        $entityPath = Config::BASE_PATH . 'entities/' . $arrPath[count($arrPath) - 1] . '.json';
+        $entityPath = Config::BASE_PATH . 'lib/packages/' . strtolower($arrPath[2]) . '/database/' . $arrPath[4] . '.json';
         $entity = json_decode(file_get_contents($entityPath), true)['defintion'];
         foreach ($entity as $column) {
             if (isset($column['apiReadable']) && !$column['apiReadable']) {

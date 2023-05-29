@@ -16,9 +16,11 @@ class BuildClassFile
     private $fileContentGetterSetter;
     private array $virtualCheck;
     private array $requiredValues;
+    private array $packageInfo;
 
-    public function __construct(array $entity)
+    public function __construct(array $entity, array $packageInfo)
     {
+        $this->packageInfo = $packageInfo;
         $this->entity = $entity;
         $this->className = ucfirst($entity['name']);
         $this->fileName = Config::BASE_PATH . 'lib/build/' . $this->className . 'Basic.php';
@@ -32,6 +34,7 @@ class BuildClassFile
         $this->fileContent = str_replace('###seperator###', "explode('\\\', __CLASS__);", $this->fileContent);
         $this->fileContent = str_replace('###className###', $this->className, $this->fileContent);
         $this->fileContent = str_replace('###definitionOfAttr###', $this->prepareProperties(), $this->fileContent);
+        $this->fileContent = str_replace('###namespace###', "PS\Packages\\" . ucfirst($this->packageInfo['packageName']) . "\Classes\\" . ucfirst($this->className), $this->fileContent);
         $this->prepareRequiredValues();
         if (!is_dir(Config::BASE_PATH . 'lib/build/')) {
             mkdir(Config::BASE_PATH . 'lib/build/', 777);
@@ -83,11 +86,11 @@ class BuildClassFile
 
     private function prepareClass(): bool
     {
-        $fileName = Config::BASE_PATH . 'lib/src/Classes/' . $this->className . '.php';
+        $fileName = Config::BASE_PATH . 'lib/packages/' . $this->packageInfo['packageName'] . '/classes/' . $this->className . '.php';
         if (file_exists($fileName)) {
             foreach ($this->entity['defintion'] as $column) {
                 if (isset($column['virtual']) && $column['virtual']) {
-                    $namespace = '\PS\Source\Classes\\' . $this->className;
+                    $namespace = "PS\Packages\\" . ucfirst($this->packageInfo['packageName']) . "\Classes\\" . ucfirst($this->className);
                     if (!method_exists(new $namespace(), 'get' . ucfirst($column['name']))) {
                         Logging::getInstance()->add(Logging::LOG_TYPE_DEBUG, $namespace . '::get' . ucfirst($column['name']) . '() is not callable');
                     }
@@ -100,6 +103,7 @@ class BuildClassFile
         }
         $fileContent = file_get_contents($this->templatePath . 'classTemplate.txt');
         $fileContent = str_replace('###className###', $this->className, $fileContent);
+        $fileContent = str_replace('###namespace###', "PS\Packages\\" . ucfirst($this->packageInfo['packageName']) . "\Classes", $fileContent);
         if (file_put_contents($fileName, $fileContent) === false) {
             return false;
         }

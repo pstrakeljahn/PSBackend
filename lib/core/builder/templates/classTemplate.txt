@@ -1,6 +1,6 @@
 <?php
 
-namespace PS\Source\Classes;
+namespace ###namespace###;
 
 use PS\Build\###className###Basic;
 

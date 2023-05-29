@@ -4,7 +4,7 @@ namespace PS\Build;
 
 use Config;
 use Exception;
-use PS\Source\Classes\###className###;
+use ###namespace###;
 use PS\Core\Database\DatabaseHelper;
 
 class ###className###Basic extends DatabaseHelper

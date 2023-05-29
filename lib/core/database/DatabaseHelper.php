@@ -17,7 +17,7 @@ class DatabaseHelper extends Criteria
 
     public function getByPK(int $id)
     {
-        $instanceName = '\PS\Source\Classes\\' . self::getClassName();
+        $instanceName = self::getClassName(true);
         $table = $instanceName::TABLENAME;
         $db = new DBConnector();
         $db->query("SELECT * FROM `$table` WHERE ID =:id");
@@ -34,7 +34,7 @@ class DatabaseHelper extends Criteria
         $output = [];
         if ($result) {
             foreach ($result as $row) {
-                $instanceName = '\PS\Source\Classes\\' . self::getClassName();
+                $instanceName = self::getClassName(true);
                 $selfInstance = new $instanceName();
                 foreach ($selfInstance as $key => &$value) {
                     // if (ctype_digit((string)$row[$key])) {
@@ -95,7 +95,7 @@ class DatabaseHelper extends Criteria
 
     public function select(): array
     {
-        $instanceName = '\PS\Source\Classes\\' . self::getClassName();
+        $instanceName = self::getClassName(true);
         $table = $instanceName::TABLENAME;
         $query = 'SELECT * FROM ' . $table . ' ';
         if (isset($this->searchString)) {
@@ -132,7 +132,7 @@ class DatabaseHelper extends Criteria
         try {
             $db->beginTransaction();
             if (is_null($this->getID())) {
-                $instanceName = '\PS\Source\Classes\\' . self::getClassName();
+                $instanceName = self::getClassName(true);
                 $table = $instanceName::TABLENAME;
                 $query = 'INSERT INTO ' . $table . ' (';
                 $valueString = '';
@@ -189,7 +189,7 @@ class DatabaseHelper extends Criteria
             return false;
         }
         $db = new DBConnector();
-        $instanceName = '\PS\Source\Classes\\' . self::getClassName();
+        $instanceName = self::getClassName(true);
         $table = $instanceName::TABLENAME;
         $query = 'DELETE FROM ' . $table . '  WHERE id=' . $this->getID() . ';';
         $db->query($query);
@@ -206,7 +206,7 @@ class DatabaseHelper extends Criteria
     {
         try {
             foreach ($this as $key => $value) {
-                $instanceName = '\PS\Source\Classes\\' . self::getClassName();
+                $instanceName = self::getClassName(true);
                 if (in_array($key, $instanceName::REQUIRED_VALUES) && is_null($this->{$key})) {
                     throw new Exception($key . ' is required!');
                 }
@@ -216,8 +216,11 @@ class DatabaseHelper extends Criteria
         }
     }
 
-    protected static function getClassName(): string
+    protected static function getClassName(bool $getNamespace = false): string
     {
+        if ($getNamespace) {
+            return get_called_class();
+        }
         $calledClass = explode('\\', get_called_class());
         return $calledClass[count($calledClass) - 1];
     }

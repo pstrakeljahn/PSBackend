@@ -4,7 +4,7 @@ namespace PS\Core\Session;
 
 use Config;
 use PS\Core\RequestHandler\Request;
-use PS\Source\Classes\User;
+use PS\Packages\System\Classes\User;
 
 class TokenHelper extends Request
 {

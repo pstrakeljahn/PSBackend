@@ -4,7 +4,7 @@ namespace PS\Build;
 
 use Config;
 use Exception;
-use PS\Source\Classes\Reservation;
+use PS\Packages\Gans\Classes\Reservation;
 use PS\Core\Database\DatabaseHelper;
 
 class ReservationBasic extends DatabaseHelper

@@ -4,7 +4,7 @@ namespace PS\Build;
 
 use Config;
 use Exception;
-use PS\Source\Classes\Menu;
+use PS\Packages\Gans\Classes\Menu;
 use PS\Core\Database\DatabaseHelper;
 
 class MenuBasic extends DatabaseHelper

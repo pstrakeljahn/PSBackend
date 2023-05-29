@@ -1,6 +1,6 @@
 <?php
 
-namespace PS\Source\Classes;
+namespace PS\Packages\System\Classes;
 
 use PS\Build\UserBasic;
 

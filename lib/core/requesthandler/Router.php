@@ -2,9 +2,10 @@
 
 namespace PS\Core\RequestHandler;
 
+use Config;
 use PS\Core\Database\Criteria;
 use PS\Core\Session\TokenHelper;
-use PS\Source\Classes\User;
+use PS\Packages\System\Classes\User;
 
 class Router extends Request
 {
@@ -51,7 +52,8 @@ class Router extends Request
                 call_user_func_array([$this, $this->method], [[], $_GET, $_POST, $this->input, $error]);
                 return;
             }
-            $className = '\PS\Source\Classes\\' . ucfirst(explode("?", $arrUrl[0])[0]);
+            $classIndex = require(Config::BASE_PATH . 'lib/build/_index.php');
+            $className = isset($classIndex[ucfirst(explode("?", $arrUrl[0])[0])]) ? $classIndex[ucfirst(explode("?", $arrUrl[0])[0])] : "";
             $error = ['code' => null, 'message' => null];
             if (!class_exists($className)) {
                 $error = ['code' => Response::STATUS_CODE_NOTFOUND, 'message' => 'Object' . $className . ' does not exist!'];
