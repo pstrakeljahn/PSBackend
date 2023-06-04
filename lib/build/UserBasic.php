@@ -9,29 +9,28 @@ use PS\Core\Database\DatabaseHelper;
 
 class UserBasic extends DatabaseHelper
 {
-	const ID = 'ID';
-	const USERNAME = 'username';
-	const PASSWORD = 'password';
-	const MAIL = 'mail';
-	const FIRSTNAME = 'firstname';
-	const SURNAME = 'surname';
-	const DATEOFBIRTH = 'dateofbirth';
-	const STREET = 'street';
-	const NUMBER = 'number';
-	const ZIP = 'zip';
-	const CITY = 'city';
-	const PHONE = 'phone';
-	const ROLE = 'role';
-	const ENUM_ROLE_ADMIN = 'admin';
-	const ENUM_ROLE_USER = 'user';
+    const ID = 'ID';
+    const USERNAME = 'username';
+    const PASSWORD = 'password';
+    const MAIL = 'mail';
+    const FIRSTNAME = 'firstname';
+    const SURNAME = 'surname';
+    const DATEOFBIRTH = 'dateofbirth';
+    const STREET = 'street';
+    const NUMBER = 'number';
+    const ZIP = 'zip';
+    const CITY = 'city';
+    const PHONE = 'phone';
+    const ROLE = 'role';
+    const ENUM_ROLE_ADMIN = 'admin';
+    const ENUM_ROLE_USER = 'user';
 
-	const TABLENAME = 'users';
+    const TABLENAME = 'users';
 
-	const REQUIRED_VALUES = ['username', 'password', 'mail', 'firstname', 'surname', 'street', 'number', 'zip', 'city', 'phone', 'role'];
+    const REQUIRED_VALUES = ['username', 'password', 'mail', 'firstname', 'surname', 'street', 'number', 'zip', 'city', 'phone', 'role'];
 
-	public function __construct()
-	{
-
+    public function __construct()
+    {
 		$classIndex = require(Config::BASE_PATH . 'lib/build/_index.php');
 		$className = self::getClassName();
 		$namespace = isset($classIndex[$className]) ? $classIndex[$className] : "";
@@ -40,26 +39,24 @@ class UserBasic extends DatabaseHelper
 			throw new Exception('Cannot instantiate class! Entity file missing.');
 		};
 
-
-
 		$entityPath = Config::BASE_PATH . 'lib/packages/' . strtolower($explodedString[2]) . '/database/' . $explodedString[4] . '.json';
+		
 		if (!file_exists($entityPath)) {
 			throw new Exception('Cannot instantiate class! Entity file missing.');
 		}
 		$entity = json_decode(file_get_contents($entityPath), true)['defintion'];
-		// ID IS HARDCODED!
-		$this->{'ID'} = null;
-		foreach ($entity as $column) {
-			$this->{$column['name']} = null;
-		}
-	}
-
-	public static function getInstance()
-	{
+        // ID IS HARDCODED!
+        $this->{'ID'} = null;
+        foreach ($entity as $column) {
+            $this->{$column['name']} = null;
+        }
+    }
+    
+	public static function getInstance() {
 		return new User();
 	}
 
-	public function getUsername()
+    public function getUsername()
 	{
 		return $this->{'username'};
 	}
@@ -70,7 +67,7 @@ class UserBasic extends DatabaseHelper
 		return $this;
 	}
 
-	public function getPassword()
+    public function getPassword()
 	{
 		return $this->{'password'};
 	}
@@ -81,7 +78,7 @@ class UserBasic extends DatabaseHelper
 		return $this;
 	}
 
-	public function getMail()
+    public function getMail()
 	{
 		return $this->{'mail'};
 	}
@@ -92,7 +89,7 @@ class UserBasic extends DatabaseHelper
 		return $this;
 	}
 
-	public function getFirstname()
+    public function getFirstname()
 	{
 		return $this->{'firstname'};
 	}
@@ -103,7 +100,7 @@ class UserBasic extends DatabaseHelper
 		return $this;
 	}
 
-	public function getSurname()
+    public function getSurname()
 	{
 		return $this->{'surname'};
 	}
@@ -114,7 +111,7 @@ class UserBasic extends DatabaseHelper
 		return $this;
 	}
 
-	public function getDateofbirth()
+    public function getDateofbirth()
 	{
 		return $this->{'dateofbirth'};
 	}
@@ -125,7 +122,7 @@ class UserBasic extends DatabaseHelper
 		return $this;
 	}
 
-	public function getStreet()
+    public function getStreet()
 	{
 		return $this->{'street'};
 	}
@@ -136,7 +133,7 @@ class UserBasic extends DatabaseHelper
 		return $this;
 	}
 
-	public function getNumber()
+    public function getNumber()
 	{
 		return $this->{'number'};
 	}
@@ -147,7 +144,7 @@ class UserBasic extends DatabaseHelper
 		return $this;
 	}
 
-	public function getZip()
+    public function getZip()
 	{
 		return $this->{'zip'};
 	}
@@ -158,7 +155,7 @@ class UserBasic extends DatabaseHelper
 		return $this;
 	}
 
-	public function getCity()
+    public function getCity()
 	{
 		return $this->{'city'};
 	}
@@ -169,7 +166,7 @@ class UserBasic extends DatabaseHelper
 		return $this;
 	}
 
-	public function getPhone()
+    public function getPhone()
 	{
 		return $this->{'phone'};
 	}
@@ -180,7 +177,7 @@ class UserBasic extends DatabaseHelper
 		return $this;
 	}
 
-	public function getRole()
+    public function getRole()
 	{
 		return $this->{'role'};
 	}

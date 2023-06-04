@@ -26,13 +26,13 @@ class BuildInstance
             // Start Script
             $this->run();
         } catch (\Exception $e) {
-            Logging::getInstance()->add(Logging::LOG_TYPE_ERROR, $e->getMessage());
+            Logging::getInstance()->add(Logging::LOG_TYPE_ERROR, $e->getMessage(), false, true);
         }
     }
 
     private function run(): void
     {
-        // $this->printHeader();
+        $this->printHeader();
 
         //Fetch Entites
         $packages = glob(Config::BASE_PATH . 'lib/packages/*');
@@ -50,7 +50,7 @@ class BuildInstance
         $this->createIndex();
 
         // Install composer
-        // $this->installComposer();
+        $this->installComposer();
 
         // Create Admin user
         $this->createAdminUser();

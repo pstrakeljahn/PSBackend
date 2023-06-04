@@ -26,7 +26,16 @@ class ReservationBasic extends DatabaseHelper
 
     public function __construct()
     {
-		$entityPath = Config::BASE_PATH . 'entities/' . self::getClassName() . '.json';
+		$classIndex = require(Config::BASE_PATH . 'lib/build/_index.php');
+		$className = self::getClassName();
+		$namespace = isset($classIndex[$className]) ? $classIndex[$className] : "";
+		$explodedString = explode("\\", $namespace);
+		if (!count($explodedString)) {
+			throw new Exception('Cannot instantiate class! Entity file missing.');
+		};
+
+		$entityPath = Config::BASE_PATH . 'lib/packages/' . strtolower($explodedString[2]) . '/database/' . $explodedString[4] . '.json';
+		
 		if (!file_exists($entityPath)) {
 			throw new Exception('Cannot instantiate class! Entity file missing.');
 		}

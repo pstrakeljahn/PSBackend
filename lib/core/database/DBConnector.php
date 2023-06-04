@@ -61,7 +61,12 @@ class DBConnector
 
 	public function query($query, ?array $params = null)
 	{
-		Logging::getInstance()->add(Logging::LOG_TYPE_DB, str_replace(':', '', $query));
+		if (!str_contains(strtolower($query), 'select')) {
+			Logging::getInstance()->add(Logging::LOG_TYPE_DB, str_replace(':', '', $query));
+		}
+		if (is_null($this->dbh)) {
+			throw new \Exception('No connection to database!');
+		}
 		$this->stmt = $this->dbh->prepare($query);
 		if (!is_null($params)) {
 			$this->stmt->execute($params);
